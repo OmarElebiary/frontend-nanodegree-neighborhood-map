@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Test</title>
+	<script src="js/lib/jquery-2.2.2.min.js"></script>
+</head>
+<body>
+<form>
+	<input type="text" id="Search" placeholder="Search" value="search"></input>
+	<button id="search"></button>
+	<input type="submit" id="Submit"></input>
+</form>
+<script type="text/javascript">
+	var search = document.getElementById('Search').value;
+	console.log(search);
+	//alert(search);
+	$("#search").click(function(event) {
+		/* Act on the event */
+		var search = document.getElementById('Search').value;
+		console.log(search);
+		alert(search);
+	});
+	//console.log(document.getElementById('search').html());
+	console.log(search);
+    console.log(document.getElementById('Search').text);
+
+
+</script>
+</body>
+</html>
