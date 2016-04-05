@@ -31,3 +31,11 @@ body{
 	border-color: #4D91DA;
 	border-radius: 6px;
 }
+#results {
+	left: 20px;
+	top: 40px;
+	z-index: 99;
+	background-color: rgba(252,252,252,0.4);
+	position: absolute;
+	overflow: hidden;
+}
