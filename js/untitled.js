@@ -1,34 +1,36 @@
 function appViewModel() {
     var self = this;
-    var boston,
+    var timeSq,
         map,
         infowindow,
         bounds;
 
     /**
-     * Creates the map and sets the center to Boston.  Then gets popular
+     * Creates the map and sets the center to timeSq.  Then gets popular
      * restaurants and bars in the area.
      */
     function initialize() {
-        boston = new google.maps.LatLng(40.75773,-73.985709);
-        map = new google.maps.Map(document.getElementById('map'), {
-            center: boston,
-            zoom: 18,
+        timeSq = new google.maps.LatLng(40.75773,-73.985709);
+        var myOptions = {
+            center: timeSq,
+            zoom: 19,
+            scrollwheel: false,
             disableDefaultUI: true
-        });
+        };
+        map = new google.maps.Map(document.getElementById('map'), myOptions);
         getAllPlaces();
     }
 
     /**
-     * Makes a request to Google for popular restaurants and bars in Boston.
+     * Makes a request to Google for popular restaurants and bars in timeSq.
      * Executes a callback function with the response data from Google.
      */
     function getAllPlaces() {
         self.allPlaces([]);
         var request = {
-            location: boston,
-            radius: 1000,
-            types: ['food', 'bar', 'cafe']
+            location: timeSq,
+            radius: 500,
+            types: ['restaurants', 'bar', 'cafe']
         };
         infowindow = new google.maps.InfoWindow();
         service = new google.maps.places.PlacesService(map);
@@ -53,23 +55,6 @@ function appViewModel() {
             bounds = new google.maps.LatLngBounds();
             results.forEach(function (place) {
                 place.marker = createMarker(place);
-                /**
-                 * Array to store data from Instagram API request.  Array
-                 * is observable so data can be stored and accessed after
-                 * this place is pushed to the allPlaces array.  This way
-                 * the page can load and doesn't have to wait for data from
-                 * Instagram.
-                 * @type {Array.<Object>}
-                 */
-                place.instagrams = ko.observableArray([]);
-                /**
-                 * Property that is true if the getInstagrams function is still
-                 * running for this place.  Used to distinguish difference
-                 * places with no Instagram data and places that are still
-                 * in the process of getting the data.
-                 * @type: {boolean}
-                 */
-                place.isGettingInstagrams = ko.observable(true);
                 /**
                  * If property is true, place will be included in the
                  * filteredPlaces array and will be displayed on screen.
@@ -244,9 +229,9 @@ function appViewModel() {
         }
 
         // Set Timeout in case Instagram data can't be retrieved.
-        var instagramTimeout = setTimeout(function () {
+        /*var instagramTimeout = setTimeout(function () {
             place.isGettingInstagrams(false);
-        }, 5000);
+        }, 5000);*/
 
         var accessToken = '1582950873.10c5b95.cbfb0efc6d0d4242aec054371dfa8afe';
         var locationUrl = 'https://api.instagram.com/v1/locations/search?lat=' +
@@ -262,9 +247,9 @@ function appViewModel() {
             url: locationUrl
         });
 
-        locationSearch.then(function (data) {
+        /*locationSearch.then(function (data) {
             getAllPhotos(data)
-        });
+        });*/
     };
 
     // An array that will contain all places that are initially retrieved by
@@ -403,7 +388,7 @@ function appViewModel() {
     };
 
     // Boolean to determine whether or not to show Instagram photo gallery.
-    //self.viewingPhotos = ko.observable(false);
+    self.viewingPhotos = ko.observable(false);
 
     // If viewing photo gallery, close it.  Otherwise open the photo gallery.
     // Map should not be draggable while viewing photos.
@@ -492,24 +477,6 @@ function appViewModel() {
     // Determines text to display when mouse is hovered over Instagram button.
     // Will let user know if any Instagrams were found for the location or
     // if the application is still trying to retrieve Instagrams.
-    self.getInstagramStatus = ko.computed(function () {
-        if (self.chosenPlace()) {
-            if (self.chosenPlace().instagrams().length != 0 &&
-                !self.chosenPlace().isGettingInstagrams()) {
-                return 'Click to view recent Instagrams from ' +
-                    self.chosenPlace().name;
-            }
-            if (self.chosenPlace().isGettingInstagrams()) {
-                return 'Retrieving Instagrams from ' +
-                    self.chosenPlace().name + ' ...';
-            }
-            if (self.chosenPlace().instagrams().length === 0 &&
-                !self.chosenPlace().isGettingInstagrams()) {
-                return 'No Instagrams found from ' + self.chosenPlace().name;
-            }
-        }
-        return '';
-    });
 
     initialize();
 
