@@ -5,10 +5,7 @@ function appViewModel() {
         infowindow,
         bounds;
 
-    /**
-     * Creates the map and sets the center to timeSq.  Then gets popular
-     * restaurants and bars in the area.
-     */
+     //Create Google map
     function initialize() {
         timeSq = new google.maps.LatLng(40.75773,-73.985709);
         var myOptions = {
@@ -21,10 +18,7 @@ function appViewModel() {
         getAllPlaces();
     }
 
-    /**
-     * Makes a request to Google for popular restaurants and bars in timeSq.
-     * Executes a callback function with the response data from Google.
-     */
+    //Get places through Radar search in google places API
     function getAllPlaces() {
         self.allPlaces([]);
         var request = {
@@ -207,49 +201,6 @@ function appViewModel() {
             return def.promise();
         }
 
-        /**
-         * Calls getPhotosById for each location ID returned from getLocationIds.
-         * When all Instagram requests have completed, sort the place's instagram
-         * array by the number of likes the photo has and set the place's
-         * isGettingInstagrams property to false.
-         * @param {Array.<Object>} results Array of results from Instagram
-         *      location search.
-         */
-        function getAllPhotos(results) {
-            var locIds = getLocationIds(results);
-            // Array to track each Instagram request.
-            var promises = [];
-
-            locIds.forEach(function (id) {
-                var mediaUrl = 'https://api.instagram.com/v1/locations/' + id +
-                    '/media/recent?access_token=' + accessToken;
-                promises.push(getPhotosById(mediaUrl));
-            });
-
-        }
-
-        // Set Timeout in case Instagram data can't be retrieved.
-        /*var instagramTimeout = setTimeout(function () {
-            place.isGettingInstagrams(false);
-        }, 5000);*/
-
-        var accessToken = '1582950873.10c5b95.cbfb0efc6d0d4242aec054371dfa8afe';
-        var locationUrl = 'https://api.instagram.com/v1/locations/search?lat=' +
-            place.geometry.location.lat() + '&lng=' +
-            place.geometry.location.lng() + '&distance=50&access_token=' +
-            accessToken;
-
-        // Get locations from Instagram near the input place's coordinates.
-        var locationSearch = $.ajax({
-            type: "GET",
-            dataType: "jsonp",
-            cache: false,
-            url: locationUrl
-        });
-
-        /*locationSearch.then(function (data) {
-            getAllPhotos(data)
-        });*/
     };
 
     // An array that will contain all places that are initially retrieved by
@@ -350,7 +301,7 @@ function appViewModel() {
         };
         service.getDetails(request, function (details, status) {
             // Default values to display if getDetails fails.
-            var locName = '<h4>' + place.name + '</h4>';
+            var locName = '<h5>' + place.name + '</h5>';
             var locStreet = '';
             var locCityState = '';
             var locPhone = '';
@@ -387,92 +338,7 @@ function appViewModel() {
         })
     };
 
-    // Boolean to determine whether or not to show Instagram photo gallery.
-    self.viewingPhotos = ko.observable(false);
 
-    // If viewing photo gallery, close it.  Otherwise open the photo gallery.
-    // Map should not be draggable while viewing photos.
-    /*self.togglePhotoDisplay = function () {
-        if (self.viewingPhotos()) {
-            self.viewingPhotos(false);
-            map.setOptions({
-                draggable: true
-            });
-        } else {
-            self.viewingPhotos(true);
-            map.setOptions({
-                draggable: false
-            });
-        }
-        resizePhoto();
-    };*/
-
-    // An index of chosenPlace's instagram array.  The photo at this index
-    // will be displayed on screen.
-    //self.chosenPhotoIndex = ko.observable(0);
-
-    // Index to display on screen because people aren't computers
-    // and want to start counting at 1, not 0.
-    /*self.chosenPhotoViewableIndex = ko.computed(function () {
-        return self.chosenPhotoIndex() + 1;
-    });*/
-
-    // Photo to display when viewingPhotos is true.
-   /* self.chosenPhoto = ko.computed(function () {
-        if (self.chosenPlace()) {
-            return self.chosenPlace().instagrams()[self.chosenPhotoIndex()];
-        }
-        return null;
-    });*/
-
-    // Photo's caption on instagram.
-    /*self.captionText = ko.computed(function () {
-        if (self.chosenPhoto() && self.chosenPhoto().caption) {
-            return self.chosenPhoto().caption.text;
-        }
-        return 'No Caption';
-    });
-*/
-    // The caption element's opacity.
-    self.captionOpacity = ko.observable(1);
-
-    // Hide or show the caption by changing its opacity.
-    self.toggleCaption = function () {
-        if (self.captionOpacity() === 1) {
-            self.captionOpacity(0);
-        } else {
-            self.captionOpacity(1);
-        }
-    };
-
-    // Change the chosenPhoto to the next photo in the chosenPlace's instagram
-    // array.  If at the end of the array, start back at the beginning.
-    /*self.nextPhoto = function () {
-        if (self.chosenPhotoIndex() !==
-            self.chosenPlace().instagrams().length - 1) {
-            self.chosenPhotoIndex(self.chosenPhotoIndex() + 1);
-        } else {
-            self.chosenPhotoIndex(0);
-        }
-    };*/
-
-    // Change the chosenPhoto to the previous photo in the chosenPlace's
-    //instagram array.  If at the beginning of the array, go to the end.
-    self.prevPhoto = function () {
-        if (self.chosenPhotoIndex() !== 0) {
-            self.chosenPhotoIndex(self.chosenPhotoIndex() - 1);
-        } else {
-            self.chosenPhotoIndex(self.chosenPlace().instagrams().length - 1);
-        }
-    };
-
-    // Height and width value for Instagram photo being displayed.
-    self.photoDimensionValue = ko.observable();
-
-    // Height and width in pixels for Instagram photo.  For use in data-bind.
-    self.photoDimension = ko.computed(function () {
-        return self.photoDimensionValue() + 'px';
-    });
 
     // Determines text to display when mouse is hovered over Instagram button.
     // Will let user know if any Instagrams were found for the location or
@@ -480,26 +346,6 @@ function appViewModel() {
 
     initialize();
 
-    // When the window is resized, update the size of the displayed photo and
-    // make sure the map displays all markers.
-    window.addEventListener('resize', function (e) {
-        map.fitBounds(bounds);
-        resizePhoto();
-    });
-
-    // If the photo gallery is being displayed, user can move through photos
-    // with the left and right arrow keys.
-    document.addEventListener('keyup', function (e) {
-        if (self.viewingPhotos()) {
-            if (e.keyCode === 37) {
-                $('.previous-photo').click();
-            }
-            if (e.keyCode === 39) {
-                $('.next-photo').click();
-            }
-        }
-    });
-    
     // When infowindow is closed, stop the marker's bouncing animation and
     // deselect the place as chosenPlace.
     google.maps.event.addListener(infowindow,'closeclick',function(){
