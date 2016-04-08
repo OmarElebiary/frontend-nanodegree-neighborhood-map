@@ -7,20 +7,20 @@
     <link rel="stylesheet" type="text/css" href="css/styles.css">
     <script src="js/lib/jquery-2.2.2.min.js"></script>
 	<script src="js/lib/knockout-3.4.0.js"></script>
-	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAFgZzt7V63Yg4IAN45GJDm8qFdCVgOBxo&libraries=places"></script>
+	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDf0EFelWsSVkc9tDJmIaHUV4R6mB7u59k&libraries=places"></script>
 
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 
 </head>
 <body>
 <div id="map"></div>
-<div class="container">
+<!--<div class="container">
     <div class="controls">
     <div class="row">
 		<div class="search-container" data-bind="component: 'search'">
-		<form class="navbar-form navbar-left" role="search">
+		<form class="navbar-form navbar-left" role="search" data-bind="submit: filterSubmit">
     	<div class="form-group">
-        <input type="text" class="form-control" placeholder="Search" id="searchText">
+        <input type="text" class="form-control" placeholder="Search" id="searchText" data-bind="value: filterWord">
     	</div>
     	<button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search" id="searchBtn"></span></button>
 		</form>
@@ -29,11 +29,48 @@
 
 
 	<div class="info-container" data-bind="component: 'info'">
-		<ul id="results"></ul>
+		<div class="list-ui">
+            <button class="button" data-bind="click: toggleLocationListIsOpen, text: toggleLocationListIsOpenButtonText"></button>
+            <ul class="listing" data-bind="foreach: markers, visible: toggleLocationListIsOpenStatus">
+                <li class="listing-item" data-bind="visible: listVisible, click: $parent.setCurrentRestuarant">
+                    <div data-bind="text: name"></div>
+                </li>
+            </ul>
+        </div>
 	</div>
 	</div>
-	</div>
-    <script src="js/main.js">
+	</div>-->
+
+<form class='search' data-bind="submit: search">
+    <input class="search-bar" data-bind="value: query" placeholder="Filter results by name or type" autofocus></input>
+    <button class="search-button" type="submit">
+      <i class="fa fa-search fa-2x fa-inverse"></i>
+    </button>
+  </form>
+
+  <button class="list-toggle" data-bind="click: toggleListDisplay, css: {'small-list-toggle': !displayingList() }">
+    <i data-bind="css: {'fa-minus-square': displayingList(),
+                    'fa-plus-square': !displayingList() }" class="fa fa-2x fa-inverse"></i>
+  </button>
+  <ul class="filtered-places" data-bind="visible: filteredPlaces().length,
+                                           foreach: {data: filteredPlaces, as: 'place'},
+                                           css: {'list-view-hidden': !displayingList()}">
+    <li class="place" data-bind="click: function() { $root.selectPlace(place); },
+                                  css: {'chosen-place': $data === $root.chosenPlace()},
+                                  attr: { id: place.id }">
+      <div class="place-info">
+        <h4 data-bind="text: place.name"></h4>
+        <p data-bind="text: place.vicinity"></p>
+      </div>
+    </li>
+  </ul>
+  <div class="no-results" data-bind="visible: filteredPlaces().length === 0,
+                                       css: {'list-view-hidden': !displayingList()}">
+    No results matched your search
+  </div>
+
+
+    <script src="js/untitled.js">
     </script>
     <!--<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAFgZzt7V63Yg4IAN45GJDm8qFdCVgOBxo&callback=initMap"
         async defer></script>-->

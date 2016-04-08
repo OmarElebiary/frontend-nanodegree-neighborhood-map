@@ -1,50 +1,5 @@
-/*var MapViewModel = function(){
-	var e = this;
-	e.center = new google.maps.LatLng(40.75773, -73.985708),e.init = function(){
-		var n = {
-			disableDefault: !0,
-			zoom : 19,
-			center: e.center
-		};
-		e.map = new google.maps.Map(document.getElementById("map-canvas"), n), e.markers = ko.observableArray([]),$.each(locationData, function(n,o){
-			var t = new google.maps.LatLng(o.location.lat,o.location.lng),
-			map: e.map,
-			listVisible:ko.observable(!0),
-			animation: google.maps.Animation.DROP,
-			name:o.name,
-			address:o.address
-		});
-	}
-};
-
-function initMap() {
-    var mapDiv = document.getElementById('map');
-        var map = new google.maps.Map(mapDiv, {
-          center: {lat: 40.75773, lng: -73.985708},
-          zoom: 19
-        });
-}*/
-
- /*function initMap() {
-        var mapDiv = document.getElementById('map');
-        var timeSquare = new google.maps.LatLng(40.75773, -73.985708);
-        var map = new google.maps.Map(mapDiv, {
-          center: timeSquare,
-          zoom: 19,
-          disableDefaultUI: true
-        });
-        var marker = new google.maps.Marker({
-    	position: timeSquare,
-    	map: map,
-    	title: 'Hello World!'
-  });
-}*/
-
-
-     	
-
 var map,infowindow;
-var allMarkers = {};
+var allMarkers = ko.observableArray([]);
 
 function initMap() {
   var timeSq = {lat: 40.75773, lng: -73.985709};
@@ -63,7 +18,7 @@ var contentString;
   service.nearbySearch({
     location: timeSq,
     radius: 1000,
-    type: ['restaurant','bars','store','Continental Restaurant','cafe','hotel',"establishment"]
+    types: ['bar']
   }, callback);
 }
 
@@ -72,12 +27,13 @@ function callback(results, status) {
     for (var i = 0; i < results.length; i++) {
       createMarker(results[i]);
       //make array of markers
-      allMarkers[i] = results[i];
+      	/*allMarkers[i] = results[i];
       //make info window for each marker
       var contentString = '<div>'+'<h3>'+allMarkers[i].name+'</h3>'+'<h5>'+allMarkers[i].vicinity+'</h5>'+'</div>';
-      console.log(allMarkers[i].name);
+      console.log(allMarkers[i]);
+      console.log(allMarkers[i].geometry.location);
       //Add results to list
-      $("#results").append('<li>'+'<h3>'+allMarkers[i].name+'</h3>'+'<h5>'+allMarkers[i].vicinity+'</h5>'+'</li>');
+      $("#results").append('<li>'+'<h3>'+allMarkers[i].name+'</h3>'+'<h5>'+allMarkers[i].vicinity+'</h5>'+'</li>');*/
     }
   }
 }
@@ -99,8 +55,10 @@ function toggleBounce() {
     }, 2000);
   }
 }
+allMarkers.push(marker);
+console.log(allMarkers);
 google.maps.event.addListener(marker, 'mouseover', function() {
-    //infowindow.setContent(place.name);
+    infowindow.setContent(place.name);
     infowindow.open(map, this);
     toggleBounce();
   });
