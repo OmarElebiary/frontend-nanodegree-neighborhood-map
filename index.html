@@ -3,77 +3,39 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE-edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Neighborhood Map</title>
-    <link rel="stylesheet" type="text/css" href="css/styles.css">
-    <script src="js/lib/jquery-2.2.2.min.js"></script>
+  <title>Neighborhood Map</title>
+  <link rel="stylesheet" type="text/css" href="css/styles.css">
+  <script src="js/lib/jquery-2.2.2.min.js"></script>
 	<script src="js/lib/knockout-3.4.0.js"></script>
 	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDf0EFelWsSVkc9tDJmIaHUV4R6mB7u59k&libraries=places"></script>
-
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 </head>
 <body>
 <div id="map"></div>
-<!--<div class="container">
-    <div class="controls">
-    <div class="row">
-		<div class="search-container" data-bind="component: 'search'">
-		<form class="navbar-form navbar-left" role="search" data-bind="submit: filterSubmit">
-    	<div class="form-group">
-        <input type="text" class="form-control" placeholder="Search" id="searchText" data-bind="value: filterWord">
-    	</div>
-    	<button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search" id="searchBtn"></span></button>
-		</form>
-		</div>
-	</div>
-
-
-	<div class="info-container" data-bind="component: 'info'">
-		<div class="list-ui">
-            <button class="button" data-bind="click: toggleLocationListIsOpen, text: toggleLocationListIsOpenButtonText"></button>
-            <ul class="listing" data-bind="foreach: markers, visible: toggleLocationListIsOpenStatus">
-                <li class="listing-item" data-bind="visible: listVisible, click: $parent.setCurrentRestuarant">
-                    <div data-bind="text: name"></div>
-                </li>
-            </ul>
-        </div>
-	</div>
-	</div>
-	</div>-->
 
 <form class='search' data-bind="submit: search">
-    <input class="search-bar" data-bind="value: query" placeholder="Filter results by name or type" autofocus></input>
+    <input class="search-bar" data-bind="value: query" placeholder="Filter results by name" autofocus></input>
     <button class="search-button" type="submit">
       <i class="fa fa-search fa-2x fa-inverse"></i>
     </button>
   </form>
 
-  <button class="list-toggle" data-bind="click: toggleListDisplay, css: {'small-list-toggle': !displayingList() }">
-    <i data-bind="css: {'fa-minus-square': displayingList(),
-                    'fa-plus-square': !displayingList() }" class="fa fa-2x fa-inverse"></i>
+  <button class="list-toggle">
+  <p id="nav-toggle">&#9776;</p>
   </button>
-  <ul class="filtered-places" data-bind="visible: filteredPlaces().length,
-                                           foreach: {data: filteredPlaces, as: 'place'},
-                                           css: {'list-view-hidden': !displayingList()}">
-    <li class="place" data-bind="click: function() { $root.selectPlace(place); },
-                                  css: {'chosen-place': $data === $root.chosenPlace()},
-                                  attr: { id: place.id }">
+  <ul class="filtered-places" data-bind="visible: filteredPlaces().length,foreach: {data: filteredPlaces, as: 'place'}, css: {'list-view-hidden': !displayingList()}">
+    <li class="place" data-bind="click: function() { $root.selectPlace(place); },css: {'chosen-place': $data === $root.chosenPlace()},attr: { id: place.id }">
       <div class="place-info">
         <h4 data-bind="text: place.name"></h4>
         <p data-bind="text: place.vicinity"></p>
       </div>
     </li>
   </ul>
-  <div class="no-results" data-bind="visible: filteredPlaces().length === 0,
-                                       css: {'list-view-hidden': !displayingList()}">
+  <div class="no-results" data-bind="visible: filteredPlaces().length === 0, css: {'list-view-hidden': !displayingList()}">
     No results matched your search
   </div>
 
-
-    <script src="js/untitled.js">
-    </script>
-    <!--<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAFgZzt7V63Yg4IAN45GJDm8qFdCVgOBxo&callback=initMap"
-        async defer></script>-->
+  <script src="js/main.js"></script>
 </body>
 </html>
-
