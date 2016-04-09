@@ -106,7 +106,8 @@ function appViewModel() {
         infowindow.setMap(null);
         self.allPlaces().forEach(function (place) {
             place.isInFilteredList(false);
-            place.marker.setMap(null);
+            //place.marker.setMap(null);
+            place.marker.setVisible(false);
         });
         self.searchTerms().forEach(function (word) {
             self.allPlaces().forEach(function (place) {
@@ -115,9 +116,10 @@ function appViewModel() {
                 if (place.name.toLowerCase().indexOf(word) !== -1 ||
                     place.types.indexOf(word) !== -1) {
                     place.isInFilteredList(true);
-                    place.marker.setMap(map);
+                    //place.marker.setMap(map);
+                    place.marker.setVisible(true);
                 }
-            })
+            });
         });
     };
 
@@ -179,11 +181,11 @@ function appViewModel() {
             infowindow.setContent(content);
             infowindow.open(map, place.marker);
             map.panTo(place.marker.position);
-        })
+        });
     };
 
     initialize();
-
+    if(!map){alert("Couldn't connect to Google Maps!");}
     // When infowindow is closed, stop the marker's bouncing animation and
     // deselect the place as chosenPlace.
     google.maps.event.addListener(infowindow,'closeclick',function(){

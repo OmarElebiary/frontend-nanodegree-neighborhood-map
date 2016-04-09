@@ -11,7 +11,7 @@ body,
 }
 
 body {
-  font-family: 'Lato', sans-serif;
+  font-family: "Lato", sans-serif;
 }
 
 p {
@@ -142,7 +142,7 @@ h4 {
 
 .chosen-place {
   width: 100%;
-  background-color: #EEEEEE;
+  background-color: #eee;
   font-weight: bold;
   font-size: 1.4em;
 }
