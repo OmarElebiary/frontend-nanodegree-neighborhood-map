@@ -5,7 +5,15 @@ function appViewModel() {
         infowindow,
         bounds;
 
-     //Create Google map
+    // Yelp Constants
+	var yelpKeyData = {
+	consumerKey: 'DmsUBOS-WtBBQD33Uvqg7A',
+	consumerSecret: 'R8i-hQOfVJ33anmtv6RfFJZeIFY',
+	token: '_MMCuRi8w-qXkuy4Y1IKsJ0Lc2CyMiBH',
+	tokenSecret: 'qrm5CnjdtQAgnYbngt-FIt55gAY'
+	};
+
+    //Create Google map
     function initialize() {
         timeSq = new google.maps.LatLng(40.75773,-73.985709);
         var myOptions = {
