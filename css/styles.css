@@ -187,3 +187,27 @@ h4 {
 	height: 150px;
 	width: auto;
 }
+.news{
+  z-index: 100;
+  position: fixed;
+  right: 20%;
+  top: 50%;
+  background-color: rgba(252,252,252,0.7);
+  padding: 10px 10px 10px 10px;
+  /*pointer-events: none;*/
+  width: 650px;
+  height: 40%;
+  overflow-x:hidden;
+  overflow-y:scroll;
+}
+.news h1{
+  line-height: 35px;
+  font-weight: bold;
+}
+#news-toggle{
+  font-size: 1.0em;
+  font-weight: bold;
+  padding: auto;
+  margin: auto;
+  color: black;
+}
