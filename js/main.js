@@ -1,4 +1,3 @@
-/*global ko google oauthSignature Offline*/
 "use strict";
 
 // Yelp Constants
