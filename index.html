@@ -9,7 +9,7 @@
     <script src="js/lib/knockout-3.4.0.js"></script>
     <script src="js/lib/oauth-1.0a.js"></script>
     <script src="js/lib/oauth-signature.min.js"></script>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDf0EFelWsSVkc9tDJmIaHUV4R6mB7u59k"></script>
+<!--<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDf0EFelWsSVkc9tDJmIaHUV4R6mB7u59k&callback=initMap"></script>-->
      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
   </head>
@@ -18,7 +18,7 @@
       <div id="map-canvas"></div>
       <div class="form-ui">
         <form class='search' data-bind="submit: filterSubmit">
-    <input class="search-bar" data-bind="value: filterWord, valueUpdate: 'keyup'" placeholder="Filter results by name" autofocus></input>
+    <input class="search-bar" data-bind="value: filterWord, valueUpdate: 'keyup'" placeholder="Filter results by name" autofocus />
     <button class="search-button" type="submit">
       <i class="fa fa-search fa-2x fa-inverse"></i>
     </button>
@@ -37,7 +37,10 @@
   </ul>
     </div>
     </div>
+    <script src="js/map.js"></script>
     <script src="js/data.js"></script>
-    <script src="js/main.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDf0EFelWsSVkc9tDJmIaHUV4R6mB7u59k&callback=initMap" onerror="googleError()" async defer></script>
+        <script async src="js/main.js"></script>
+
   </body>
 </html>
