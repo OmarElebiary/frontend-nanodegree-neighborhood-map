@@ -1,4 +1,4 @@
-# Frontend Nanodegree Neighborhood Map
+# Frontend Nanodegree Neighborhood Map Project
 
 
 ###To run the app open the Link : http://omarelebiary.github.io/frontend-nanodegree-neighborhood-map/
