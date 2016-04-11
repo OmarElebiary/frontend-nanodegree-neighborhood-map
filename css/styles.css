@@ -11,7 +11,7 @@ body,
 }
 
 body {
-  font-family: 'Lato', sans-serif;
+  font-family: "Lato", sans-serif;
 }
 
 p {
@@ -142,7 +142,7 @@ h4 {
 
 .chosen-place {
   width: 100%;
-  background-color: #EEEEEE;
+  background-color: #eee;
   font-weight: bold;
   font-size: 1.4em;
 }
@@ -186,4 +186,62 @@ h4 {
 .streetViewImage{
 	height: 150px;
 	width: auto;
+}
+
+.news{
+  z-index: 100;
+  position: fixed;
+  right: 20%;
+  top: 50%;
+  padding: 10px 10px 10px 10px;
+  /*pointer-events: none;*/
+  width: 650px;
+  height: 300px;
+  right: 0;
+  bottom: 0;
+  margin-bottom: 0px;
+}
+
+.news-header{
+  z-index: 100;
+  position: fixed;
+  right: 21.6%;
+  top: 45%;
+  background-color: rgba(252,252,252,0.7);
+  padding: 10px 10px 10px 10px;
+  overflow: hidden;
+  text-align: center;
+}
+
+.news-header-collapse{
+  z-index: 100;
+  position: fixed;
+  right: 0;
+  top: 0;
+  background-color: rgba(252,252,252,0.7);
+  padding: 10px 10px 10px 10px;
+  overflow: hidden;
+}
+
+.articles{
+  right: 0px;
+  bottom: 0px;
+  position: absolute;
+  padding: 10px 10px 10px 10px;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  height: 280px;
+  background-color: rgba(252,252,252,0.7);
+}
+
+.news h3{
+  font-weight: bold;
+}
+
+#news-toggle{
+  font-size: 1.0em;
+  font-weight: bold;
+  padding: auto;
+  margin: auto;
+  color: black;
 }
