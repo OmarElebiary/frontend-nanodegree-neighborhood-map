@@ -212,6 +212,8 @@ var yelpKeyData = {
     $("#news-toggle").click(function(event) {
     	/* Act on the event */
     	$(".articles").toggle();
+    	//$(".articles").css('display','none');
+    	$(".news-header").toggleClass('news-header-collapse','news-header');
     });
 
     initialize();
