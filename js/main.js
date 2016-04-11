@@ -1,222 +1,162 @@
-function appViewModel() {
-    var self = this;
-    var timeSq,
-        map,
-        infowindow,
-        bounds;
+/*global ko google oauthSignature Offline*/
+"use strict";
 
-    //Create Google map
-    function initialize() {
-        timeSq = new google.maps.LatLng(40.75773,-73.985709);
-        var myOptions = {
-            center: timeSq,
-            zoom: 20,
-            scrollwheel: false,
-            disableDefaultUI: true
-        };
-        map = new google.maps.Map(document.getElementById('map'), myOptions);
-        getAllPlaces();
-    }
-    //Get places through Radar search in google places API
-    function getAllPlaces() {
-        self.allPlaces([]);
-        var request = {
-            location: timeSq,
-            radius: 500,
-            types: ['restaurants', 'bar', 'cafe']
-        };
-        infowindow = new google.maps.InfoWindow();
-        service = new google.maps.places.PlacesService(map);
-        service.nearbySearch(request, getAllPlacesCallback);
-    }
-
-    function getAllPlacesCallback(results, status) {
-        if (status === google.maps.places.PlacesServiceStatus.OK) {
-            // Create new bounds for the map.
-            bounds = new google.maps.LatLngBounds();
-            results.forEach(function (place) {
-                place.marker = createMarker(place);
-                place.isInFilteredList = ko.observable(true);
-                self.allPlaces.push(place);
-                bounds.extend(new google.maps.LatLng(
-                    place.geometry.location.lat(),
-                    place.geometry.location.lng()));
-            });
-            //Include All markers.
-            map.fitBounds(bounds);
-        }
-    }
-
-     //Create marker for each result
-    function createMarker(place) {
-        var marker = new google.maps.Marker({
-            map: map,
-            position: place.geometry.location,
-			animation: google.maps.Animation.DROP
-        });
-        console.log(place.vicinity);
-        var coords = place.geometry.location.lat()+","+place.geometry.location.lng();
-        // When a marker is clicked scroll the corresponding list view element
-        // into view and click it.
-        google.maps.event.addListener(marker, 'click', function () {
-            document.getElementById(place.id).scrollIntoView();
-            $('#' + place.id).trigger('click');
-        });
-        return marker;
-    }
-
-   //Get address
-    function getStreet(address) {
-        var firstComma = address.indexOf(',');
-        var street = address.slice(0, firstComma) + '.';
-        return street;
-    }
-
-   //Get the State
-    function getCityState(address) {
-        var firstComma = address.indexOf(',');
-        var cityState = address.slice(firstComma + 1);
-        cityState = cityState.replace(', United States', '');
-        return cityState;
-    }
-
-    // An array that will contain all places that are initially retrieved by
-    // the getAllPlaces function.
-    self.allPlaces = ko.observableArray([]);
-
-    // Array derived from allPlaces.  Contains each place that met the search
-    // criteria that the user entered.
-    self.filteredPlaces = ko.computed(function () {
-        return self.allPlaces().filter(function (place) {
-            return place.isInFilteredList();
-        });
-    });
-
-    // Currently selected location.
-    self.chosenPlace = ko.observable();
-
-    // Value associated with user input from search bar used to filter results.
-    self.query = ko.observable('');
-
-    // Break the user's search query into separate words
-    self.searchTerms = ko.computed(function () {
-        return self.query().toLowerCase().split(' ');
-    });
-
-    //Search functions in the returned places
-    self.search = function () {
-        self.chosenPlace(null);
-        infowindow.setMap(null);
-        self.allPlaces().forEach(function (place) {
-            place.isInFilteredList(false);
-            //place.marker.setMap(null);
-            place.marker.setVisible(false);
-        });
-        self.searchTerms().forEach(function (word) {
-            self.allPlaces().forEach(function (place) {
-                // If search term is in the place's name or if the search term
-                // is one of the place's types, that is a match.
-                if (place.name.toLowerCase().indexOf(word) !== -1 ||
-                    place.types.indexOf(word) !== -1) {
-                    place.isInFilteredList(true);
-                    //place.marker.setMap(map);
-                    place.marker.setVisible(true);
-                }
-            });
-        });
-    };
-
-    //Detect chosen place and show info window
-    self.selectPlace = function (place) {
-        if (place === self.chosenPlace()) {
-            self.displayInfo(place);
-        } else {
-            self.filteredPlaces().forEach(function (result) {
-                result.marker.setAnimation(null);
-            });
-            self.chosenPlace(place);
-            place.marker.setAnimation(google.maps.Animation.BOUNCE);
-            self.displayInfo(place);
-        }
-    };
-
-    self.displayingList = ko.observable(true);
-
-    //Toggle the list when clicked
-    $(".list-toggle").click(function(event) {
-            $(".filtered-places").toggle();
-        });
-
-   //Display info for chosen place
-    self.displayInfo = function (place) {
-        var request = {
-            placeId: place.place_id
-        };
-        service.getDetails(request, function (details, status) {
-            // Default values to display if getDetails fails.
-            var locName = '<h5>' + place.name + '</h5>';
-            var locStreet = '';
-            var locCityState = '';
-            var locPhone = '';
-            if (status == google.maps.places.PlacesServiceStatus.OK) {
-                if (details.website) {
-                    // Add a link to the location's website in the place's name.
-                    locName = '<h4><a target="_blank" href=' + details.website +
-                        '>' + place.name + '</a></h4>';
-                }
-                if (details.formatted_phone_number) {
-                	num = details.formatted_phone_number;
-                	num = num.replace(/[- )(]/g,'');
-                	console.log(num);
-                    locPhone = '<p>' + details.formatted_phone_number + '</p>';
-                }
-                if (details.formatted_address) {
-                    locStreet = '<p>' + getStreet(
-                        details.formatted_address) + '</p>';
-                    locCityState = '<p>' + getCityState(
-                        details.formatted_address) + '<p>';
-
-            //Get images from google street view
-            // load streetview
-            var address = locStreet + ', ' + locCityState;
-            var streetViewURL = 'https://maps.googleapis.com/maps/api/streetview?size=600x400&location=' + address + '';
-                }
-            }
-            var content = '<div class="infowindow">' +'<img class="streetViewImage" src="'+ streetViewURL + '">' + locName + locStreet +
-                locCityState + locPhone + '</div>';
-            infowindow.setContent(content);
-            infowindow.open(map, place.marker);
-            map.panTo(place.marker.position);
-        });
-    };
-
-    //Get latest news from NyTimes
-    var $nytElem = $('#nytimes-articles');
-    //Nytimes Ajax request
-    var nytimesUrl = 'http://api.nytimes.com/svc/search/v2/articlesearch.json?q=ny&page=2&sort=newest&api-key=f864dfaca900db5657cd2ef3ad0f7e7b:3:74841986';
-    $.getJSON(nytimesUrl, function(data) {
-        articles = data.response.docs;
-        for(var i = 0;i < articles.length;i++){
-            var article = articles[i];
-            $nytElem.append('<li class="article">'+'<a href="'+article.web_url+'">'+article.headline.main+'</a>'+'<p>'+article.snippet+'</p>'+'</li>');
-        }
-    });
-    //News toogle
-    $("#news-toggle").click(function(event) {
-    	/* Act on the event */
-    	$(".articles").toggle();
-    	//$(".articles").css('display','none');
-    	$(".news-header").toggleClass('news-header-collapse','news-header');
-    });
-
-    initialize();
-    if(!map){alert("Couldn't connect to Google Maps!");}
-    // When infowindow is closed, stop the marker's bouncing animation and
-    // deselect the place as chosenPlace.
-    google.maps.event.addListener(infowindow,'closeclick',function(){
-        self.chosenPlace().marker.setAnimation(null);
-        self.chosenPlace(null);
-    });
+// Yelp Constants
+var yelpKeyData = {
+	consumerKey: 'DmsUBOS-WtBBQD33Uvqg7A',
+	consumerSecret: 'R8i-hQOfVJ33anmtv6RfFJZeIFY',
+	token: 'Fj9xLvvJhQ4QgTJMPoGpmZmzp5mL88Wk',
+	tokenSecret: 'EtUNshtV6ailWGN0SiQ-CbDXO_c'
 };
 
-ko.applyBindings(new appViewModel());
+var MapViewModel = function() {
+	var self = this;
+	
+	self.yelpRequest = function(yelpID, marker) {
+		// generate random string for oauth_nonce
+		var generateNonce = function() {
+		    var text = "";
+		    var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+		    for(var i = 0; i < 20; i++) {
+		        text += characters.charAt(Math.floor(Math.random() * characters.length));
+		    }
+		    return text;
+		};
+	    
+	    var yelpFullURL = 'http://api.yelp.com/v2/business/' + yelpID;
+	    
+	    var yelpParameters = {
+	    	oauth_consumer_key: yelpKeyData.consumerKey,
+	    	oauth_token: yelpKeyData.token,
+	    	oauth_nonce: generateNonce(),
+	    	oauth_timestamp: Math.floor(Date.now()/1000),
+	    	oauth_signature_method: 'HMAC-SHA1',
+	    	oauth_version: '1.0',
+	    	callback: 'cb'
+	    };
+	    
+	    var encodedSignature = oauthSignature.generate('GET', yelpFullURL, yelpParameters, yelpKeyData.consumerSecret, yelpKeyData.tokenSecret);
+	    yelpParameters.oauth_signature = encodedSignature;
+	    
+	    var settings = {
+	    	url: yelpFullURL,
+	    	data: yelpParameters,
+	    	cache: true,
+	    	dataType: 'jsonp',
+	    		    	success: function (result, status, jq) {
+				self.jsonGET(result, marker);
+	    	},
+	    	error: function (jq, status, error) {
+	    		console.log("There is an error getting Yelp information. Will attempt to get Yelp information again.");
+	    		self.jsonGETFailed(marker);
+	    		self.yelpRequest(yelpID, marker);
+	    	}
+	   };
+	    
+	   $.ajax(settings);
+	};
+	self.center = new google.maps.LatLng(40.75773,-73.985709);
+	
+	self.init = function() {
+		var myOptions = {
+			disableDefaultUI : true,
+			zoom: 17,
+			center: self.center,
+            scrollwheel: false,
+		};
+		// Create a new google maps object and attaching it to the DOM with id='map-canvas'
+		self.map = new google.maps.Map(document.getElementById('map-canvas'), myOptions);
+		
+		self.markers = ko.observableArray([]);
+		// Creates a marker and pushes into self.markers array
+		$.each(locationData, function(key, data) {
+			var marker = new google.maps.Marker({
+				position: new google.maps.LatLng(data.location.lat, data.location.lng),
+				map: self.map,
+				listVisible: ko.observable(true),
+				animation: google.maps.Animation.DROP,
+				name: data.name,
+				address: data.address
+			});
+			// send AJAX request to get data
+			self.yelpRequest(data.yelpID, marker);
+
+			// Bind a infowindow object and animation for marker
+			var contentString = '<div><h1>'+ data.name + '</h1><p>' + data.address + '</p></div>';
+			self.infowindow = new google.maps.InfoWindow();
+			google.maps.event.addListener(marker, 'click', function() {
+				self.map.panTo(marker.getPosition());
+				// Make marker icon bounce only once
+				marker.setAnimation(google.maps.Animation.BOUNCE);
+    			setTimeout(function(){ marker.setAnimation(null); }, 750);
+				self.infowindow.setContent(contentString);
+			    self.infowindow.open(self.map, this);
+			});
+			
+			self.markers.push(marker);
+		});
+		google.maps.event.addListener(self.infowindow,'closeclick', function() {
+			self.resetCenter();
+		});
+	};
+	
+	self.setCurrentRestuarant = function(marker) {
+		google.maps.event.trigger(marker, 'click');
+	};
+	
+	// Once data is successful update
+	self.jsonGET = function(data, markerToUpdate) {
+		//Get image from google street view
+		var streetViewURL = 'https://maps.googleapis.com/maps/api/streetview?size=600x400&location=' + markerToUpdate.address + '';
+		var contentString = '<div>'+'<img class="streetViewImage" src="'+ streetViewURL + '">'+'<a href = "'+data.url+'" target="_blank"><h3>'+ markerToUpdate.name + '</h3></a><p>' + markerToUpdate.address + '</p><p>'+data.phone+'</p><p> Rating: ' + data.rating +' | # of Reviews: '+ data.review_count + '</p><img src="'+ data.rating_img_url + '"></img></div>';
+		self.infowindow = new google.maps.InfoWindow();
+		google.maps.event.addListener(markerToUpdate, 'click', function() {
+			self.infowindow.setContent(contentString);
+		    self.infowindow.open(self.map, this);
+		});
+	};
+
+	// Once data is unsuccessful tell user 
+	self.jsonGETFailed = function(markerToUpdate) {
+		var contentString = '<div><h1>'+ markerToUpdate.name + '</h1><p>' + markerToUpdate.address + '</p><p> Rating: ERROR | # of Reviews: ERROR</p><p>Resending Request</p>></div>';
+		self.infowindow = new google.maps.InfoWindow();
+		google.maps.event.addListener(markerToUpdate, 'click', function() {
+			self.infowindow.setContent(contentString);
+		    self.infowindow.open(self.map, this);
+		});
+	};
+
+	self.resetCenter = function() {
+		self.map.panTo(self.center);
+	};
+
+	self.locationListIsOpen = ko.observable(true);
+
+	self.toggleLocationListIsOpen = function() {
+		self.locationListIsOpen(!self.locationListIsOpen());
+	};
+
+    self.toggleLocationListIsOpenStatus = ko.computed( function() {
+    	return self.locationListIsOpen() ? true : false;
+    });
+
+	self.filterWord = ko.observable("");
+	self.filterWordSearch = ko.computed( function() {
+    	return self.filterWord().toLowerCase().split(' ');
+    });
+
+    self.filterSubmit = function() {
+    	self.filterWordSearch().forEach(function(word) {
+    		self.markers().forEach(function(marker) {
+    			var name = marker.name.toLowerCase();
+    			var address = marker.address.toLowerCase();
+    			((name.indexOf(word) === -1) && (address.indexOf(word) === -1)) ? marker.setMap(null) : marker.setMap(self.map);
+    			((name.indexOf(word) === -1) && (address.indexOf(word) === -1)) ? marker.listVisible(false) : marker.listVisible(true);
+    		});
+    	});
+    	self.filterWord("");
+    };
+	self.init();
+};
+
+$(ko.applyBindings(new MapViewModel()));
