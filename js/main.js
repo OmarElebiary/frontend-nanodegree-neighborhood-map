@@ -60,11 +60,6 @@ var MapViewModel = function() {
 	//self.center = new google.maps.LatLng(40.75773,-73.985709);
 	
 	self.initMap = function() {
-		var myOptions = {
-			disableDefaultUI : true,
-			zoom: 17,
-			center: self.center,
-		};
 		// Create a new google maps object and attaching it to the DOM with id='map-canvas'
 		self.map = map;
 		
