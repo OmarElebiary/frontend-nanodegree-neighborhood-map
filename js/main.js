@@ -12,8 +12,9 @@ var yelpKeyData = {
 };
 
 var MapViewModel = function() {
+
 	var self = this;
-	
+
 	self.yelpRequest = function(yelpID, marker) {
 		// generate random string for oauth_nonce
 		var generateNonce = function() {
@@ -24,9 +25,9 @@ var MapViewModel = function() {
 		    }
 		    return text;
 		};
-	    
+
 	    var yelpFullURL = 'http://api.yelp.com/v2/business/' + yelpID;
-	    
+
 	    var yelpParameters = {
 	    	oauth_consumer_key: yelpKeyData.consumerKey,
 	    	oauth_token: yelpKeyData.token,
@@ -36,10 +37,10 @@ var MapViewModel = function() {
 	    	oauth_version: '1.0',
 	    	callback: 'cb'
 	    };
-	    
+
 	    var encodedSignature = oauthSignature.generate('GET', yelpFullURL, yelpParameters, yelpKeyData.consumerSecret, yelpKeyData.tokenSecret);
 	    yelpParameters.oauth_signature = encodedSignature;
-	    
+
 	    var settings = {
 	    	url: yelpFullURL,
 	    	data: yelpParameters,
@@ -54,15 +55,14 @@ var MapViewModel = function() {
 	    		self.yelpRequest(yelpID, marker);
 	    	}
 	   };
-	    
+
 	   $.ajax(settings);
 	};
-	//self.center = new google.maps.LatLng(40.75773,-73.985709);
-	
+
 	self.initMap = function() {
-		// Create a new google maps object and attaching it to the DOM with id='map-canvas'
+
 		self.map = map;
-		
+
 		self.markers = ko.observableArray([]);
 		// Creates a marker and pushes into self.markers array
 		$.each(locationData, function(key, data) {
