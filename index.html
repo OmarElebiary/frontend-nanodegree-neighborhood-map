@@ -1,49 +1,43 @@
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE-edge">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Neighborhood Map</title>
-  <link rel="stylesheet" href="css/styles.css">
-  <script src="js/lib/jquery-2.2.2.min.js"></script>
-	<script src="js/lib/knockout-3.4.0.js"></script>
-  <script src="http://oauth.googlecode.com/svn/code/javascript/oauth.js"></script>
-  <script src="http://oauth.googlecode.com/svn/code/javascript/sha1.js"></script>
-	<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDf0EFelWsSVkc9tDJmIaHUV4R6mB7u59k&libraries=places"></script>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+    <meta charset="utf-8">
+    <title>Neighborhood Map</title>
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <script src="js/lib/jquery-1.11.3.min.js"></script>
+    <script src="js/lib/knockout-3.3.0.js"></script>
+    <script src="js/lib/oauth-1.0a.js"></script>
+    <script src="js/lib/oauth-signature.min.js"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDf0EFelWsSVkc9tDJmIaHUV4R6mB7u59k"></script>
+     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-</head>
-<body>
-<div id="map"></div>
-
-<form class='search' data-bind="submit: search">
-    <input class="search-bar" data-bind="value: query, valueUpdate: 'keyup'" placeholder="Filter results by name" autofocus></input>
+  </head>
+  <body>
+    <div class="wrapper">
+      <div id="map-canvas"></div>
+      <div class="form-ui">
+        <form class='search' data-bind="submit: filterSubmit">
+    <input class="search-bar" data-bind="value: filterWord, valueUpdate: 'keyup'" placeholder="Filter results by name" autofocus></input>
     <button class="search-button" type="submit">
       <i class="fa fa-search fa-2x fa-inverse"></i>
     </button>
   </form>
 
-  <button class="list-toggle">
-  <p id="nav-toggle">&#9776;</p>
+  <button class="list-toggle" data-bind="click: toggleLocationListIsOpen">
+  <p class="nav-toggle">&#9776;</p>
   </button>
-  <ul class="filtered-places" data-bind="visible: filteredPlaces().length,foreach: {data: filteredPlaces, as: 'place'}, css: {'list-view-hidden': !displayingList()}">
-    <li class="place" data-bind="click: function() { $root.selectPlace(place); },css: {'chosen-place': $data === $root.chosenPlace()},attr: { id: place.id }">
+  <ul class="filtered-places" data-bind="foreach: markers, visible: toggleLocationListIsOpenStatus">
+    <li class="place" data-bind="visible: listVisible, click: $parent.setCurrentRestuarant">
       <div class="place-info">
-        <h4 data-bind="text: place.name"></h4>
-        <p data-bind="text: place.vicinity"></p>
+        <h4 data-bind="text: name" class="list-name"></h4>
+        <p data-bind="text: address" class="address"></p>
       </div>
     </li>
   </ul>
-  <div class="no-results" data-bind="visible: filteredPlaces().length === 0, css: {'list-view-hidden': !displayingList()}">
-    No results matched your search
-  </div>
-  <div class="news">
-    <h3 class="news-header"><span id="news-toggle">&#9776;</span> Latest News from NyTimes</h3>
-    <div class="articles">
-      <ul id="nytimes-articles"></ul>
     </div>
-  </div>
-
-  <script src="js/main.js"></script>
-</body>
+    </div>
+    <script src="js/data.js"></script>
+    <script src="js/main.js"></script>
+  </body>
 </html>
