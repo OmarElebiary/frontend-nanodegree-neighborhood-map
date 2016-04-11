@@ -1,5 +1,8 @@
 "use strict";
 
+
+function googleSuccess(){}
+
 // Yelp Constants
 var yelpKeyData = {
 	consumerKey: 'DmsUBOS-WtBBQD33Uvqg7A',
@@ -54,16 +57,16 @@ var MapViewModel = function() {
 	    
 	   $.ajax(settings);
 	};
-	self.center = new google.maps.LatLng(40.75773,-73.985709);
+	//self.center = new google.maps.LatLng(40.75773,-73.985709);
 	
-	self.init = function() {
+	self.initMap = function() {
 		var myOptions = {
 			disableDefaultUI : true,
 			zoom: 17,
 			center: self.center,
 		};
 		// Create a new google maps object and attaching it to the DOM with id='map-canvas'
-		self.map = new google.maps.Map(document.getElementById('map-canvas'), myOptions);
+		self.map = map;
 		
 		self.markers = ko.observableArray([]);
 		// Creates a marker and pushes into self.markers array
@@ -97,7 +100,7 @@ var MapViewModel = function() {
 			self.resetCenter();
 		});
 	};
-	
+
 	self.setCurrentRestuarant = function(marker) {
 		google.maps.event.trigger(marker, 'click');
 	};
@@ -154,7 +157,8 @@ var MapViewModel = function() {
     	});
     	self.filterWord("");
     };
-	self.init();
+	self.initMap();
+
 };
 
 $(ko.applyBindings(new MapViewModel()));
