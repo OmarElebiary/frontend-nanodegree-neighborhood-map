@@ -1,51 +1,20 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
+/* Content */
+/* using a class as the map canvas doesn't work
+all of the google examples have map canvas using
+an id */
 html,
 body,
-#map {
-  height: 100%;
+#map-canvas {
+    height: 100%;
+    margin: 0px;
+    padding: 0px
 }
 
-body {
-  font-family: "Lato", sans-serif;
+.wrapper {
+    height: 100%;
+    position: relative;
 }
 
-p {
-  font-size: 12px;
-}
-
-li {
-  list-style-type: none;
-}
-
-a {
-  text-decoration: none;
-  color: black;
-}
-
-h1 {
-  font-size: 26px;
-}
-
-h3 {
-  font-size: 18px;
-}
-
-h4 {
-  font-size: 16px;
-  text-decoration: underline;
-}
-
-.center-x {
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-/* Map View Classes */
 .search {
   z-index: 100;
   position: fixed;
@@ -106,6 +75,7 @@ h4 {
   overflow-x: hidden;
   overflow-y: scroll;
   width: 300px;
+  height: 90%;
   transition: 0.2s;
 }
 
@@ -140,108 +110,24 @@ h4 {
   background: #4595d6;
 }
 
-.chosen-place {
-  width: 100%;
-  background-color: #eee;
-  font-weight: bold;
-  font-size: 1.4em;
-}
-
-.place-info {
-  width: 215px;
-}
-
-.no-results {
-  z-index: 100;
-  position: fixed;
-  right: 500px;
-  top: 50px;
-  background: white;
-  height: 75px;
-  padding: 10px;
-  width: 294px;
-  text-align: center;
-  font-size: 18px;
-  font-weight: 700;
-  border: 1px solid #ddd;
-  transition: 0.2s;
-}
-
-.infowindow {
-  height: auto;
-  width: 160x;
-  padding-left: 10px;
-  padding-bottom: 10px;
-  font-weight: 400;
-}
-
-#nav-toggle{
-	font-size: 2.8em;
-	font-weight: bold;
-	padding: auto;
-	margin: auto;
-	color: black;
-}
-
 .streetViewImage{
-	height: 150px;
-	width: auto;
+  height: 150px;
+  width: auto;
 }
 
-.news{
-  z-index: 100;
-  position: fixed;
-  right: 20%;
-  top: 50%;
-  padding: 10px 10px 10px 10px;
-  /*pointer-events: none;*/
-  width: 650px;
-  height: 300px;
-  right: 0;
-  bottom: 0;
-  margin-bottom: 0px;
-}
-
-.news-header{
-  z-index: 100;
-  position: fixed;
-  right: 21.6%;
-  top: 45%;
-  background-color: rgba(252,252,252,0.7);
-  padding: 10px 10px 10px 10px;
-  overflow: hidden;
-  text-align: center;
-}
-
-.news-header-collapse{
-  z-index: 100;
-  position: fixed;
-  right: 0;
-  top: 0;
-  background-color: rgba(252,252,252,0.7);
-  padding: 10px 10px 10px 10px;
-  overflow: hidden;
-}
-
-.articles{
-  right: 0px;
-  bottom: 0px;
-  position: absolute;
-  padding: 10px 10px 10px 10px;
-  overflow-x: hidden;
-  overflow-y: scroll;
-  height: 280px;
-  background-color: rgba(252,252,252,0.7);
-}
-
-.news h3{
-  font-weight: bold;
-}
-
-#news-toggle{
-  font-size: 1.0em;
+.nav-toggle{
+  font-size: 2.4em;
   font-weight: bold;
   padding: auto;
   margin: auto;
   color: black;
+}
+
+.list-name{
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+.address{
+  font-size: 0.8em;
 }
