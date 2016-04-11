@@ -15,13 +15,6 @@ body,
     position: relative;
 }
 
-/*.form-ui {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    z-index: 99; 
-}*/
-
 .search {
   z-index: 100;
   position: fixed;
