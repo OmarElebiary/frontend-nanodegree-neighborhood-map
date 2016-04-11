@@ -3,14 +3,21 @@ function appViewModel() {
     var timeSq,
         map,
         infowindow,
-        bounds;
+        bounds,num;
 
-     //Create Google map
+var yelpKeyData = {
+	consumerKey: 'DmsUBOS-WtBBQD33Uvqg7A',
+	consumerSecret: 'R8i-hQOfVJ33anmtv6RfFJZeIFY',
+	token: '_MMCuRi8w-qXkuy4Y1IKsJ0Lc2CyMiBH',
+	tokenSecret: 'qrm5CnjdtQAgnYbngt-FIt55gAY'
+};
+
+    //Create Google map
     function initialize() {
         timeSq = new google.maps.LatLng(40.75773,-73.985709);
         var myOptions = {
             center: timeSq,
-            zoom: 19,
+            zoom: 20,
             scrollwheel: false,
             disableDefaultUI: true
         };
@@ -52,7 +59,10 @@ function appViewModel() {
         var marker = new google.maps.Marker({
             map: map,
             position: place.geometry.location,
+			animation: google.maps.Animation.DROP
         });
+        console.log(place.vicinity);
+        var coords = place.geometry.location.lat()+","+place.geometry.location.lng();
         // When a marker is clicked scroll the corresponding list view element
         // into view and click it.
         google.maps.event.addListener(marker, 'click', function () {
@@ -106,7 +116,8 @@ function appViewModel() {
         infowindow.setMap(null);
         self.allPlaces().forEach(function (place) {
             place.isInFilteredList(false);
-            place.marker.setMap(null);
+            //place.marker.setMap(null);
+            place.marker.setVisible(false);
         });
         self.searchTerms().forEach(function (word) {
             self.allPlaces().forEach(function (place) {
@@ -115,9 +126,10 @@ function appViewModel() {
                 if (place.name.toLowerCase().indexOf(word) !== -1 ||
                     place.types.indexOf(word) !== -1) {
                     place.isInFilteredList(true);
-                    place.marker.setMap(map);
+                    //place.marker.setMap(map);
+                    place.marker.setVisible(true);
                 }
-            })
+            });
         });
     };
 
@@ -160,6 +172,9 @@ function appViewModel() {
                         '>' + place.name + '</a></h4>';
                 }
                 if (details.formatted_phone_number) {
+                	num = details.formatted_phone_number;
+                	num = num.replace(/[- )(]/g,'');
+                	console.log(num);
                     locPhone = '<p>' + details.formatted_phone_number + '</p>';
                 }
                 if (details.formatted_address) {
@@ -179,11 +194,30 @@ function appViewModel() {
             infowindow.setContent(content);
             infowindow.open(map, place.marker);
             map.panTo(place.marker.position);
-        })
+        });
     };
 
-    initialize();
+    //Get latest news from NyTimes
+    var $nytElem = $('#nytimes-articles');
+    //Nytimes Ajax request
+    var nytimesUrl = 'http://api.nytimes.com/svc/search/v2/articlesearch.json?q=ny&page=2&sort=newest&api-key=f864dfaca900db5657cd2ef3ad0f7e7b:3:74841986';
+    $.getJSON(nytimesUrl, function(data) {
+        articles = data.response.docs;
+        for(var i = 0;i < articles.length;i++){
+            var article = articles[i];
+            $nytElem.append('<li class="article">'+'<a href="'+article.web_url+'">'+article.headline.main+'</a>'+'<p>'+article.snippet+'</p>'+'</li>');
+        }
+    });
+    //News toogle
+    $("#news-toggle").click(function(event) {
+    	/* Act on the event */
+    	$(".articles").toggle();
+    	//$(".articles").css('display','none');
+    	$(".news-header").toggleClass('news-header-collapse','news-header');
+    });
 
+    initialize();
+    if(!map){alert("Couldn't connect to Google Maps!");}
     // When infowindow is closed, stop the marker's bouncing animation and
     // deselect the place as chosenPlace.
     google.maps.event.addListener(infowindow,'closeclick',function(){
