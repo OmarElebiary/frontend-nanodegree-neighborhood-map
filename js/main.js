@@ -1,4 +1,3 @@
-/*global ko google oauthSignature Offline*/
 "use strict";
 
 // Yelp Constants
@@ -62,7 +61,6 @@ var MapViewModel = function() {
 			disableDefaultUI : true,
 			zoom: 17,
 			center: self.center,
-            scrollwheel: false,
 		};
 		// Create a new google maps object and attaching it to the DOM with id='map-canvas'
 		self.map = new google.maps.Map(document.getElementById('map-canvas'), myOptions);
