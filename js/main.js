@@ -7,7 +7,19 @@ var yelpKeyData = {
 	token: 'Fj9xLvvJhQ4QgTJMPoGpmZmzp5mL88Wk',
 	tokenSecret: 'EtUNshtV6ailWGN0SiQ-CbDXO_c'
 };
-var bounds;
+var map,bounds;
+function initMap() {
+    map = new google.maps.Map(document.getElementById('map-canvas'), {
+        disableDefaultUI : true,
+        center: {lat: 40.75773, lng: -73.985709},
+        zoom: 17
+    });
+    $(ko.applyBindings(new MapViewModel()));
+}
+
+function googleError(){
+	alert("Couldn't Load Google Maps");
+}
 
 var MapViewModel = function() {
 
@@ -60,7 +72,7 @@ var MapViewModel = function() {
 	self.initMap = function() {
 
 		self.map = map;
-		//Create new bounds for map
+		// Create new bounds for map
 		bounds = new google.maps.LatLngBounds();
 
 		self.markers = ko.observableArray([]);
@@ -95,7 +107,7 @@ var MapViewModel = function() {
                     data.location.lng));
 
 		});
-		            map.fitBounds(bounds);
+		    map.fitBounds(bounds);
 
 		google.maps.event.addListener(self.infowindow,'closeclick', function() {
 			self.resetCenter();
