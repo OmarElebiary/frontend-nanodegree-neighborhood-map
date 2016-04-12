@@ -5,13 +5,13 @@
     <meta charset="utf-8">
     <title>Neighborhood Map</title>
     <link rel="stylesheet" type="text/css" href="css/styles.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
     <script src="js/lib/jquery-2.2.2.min.js"></script>
     <script src="js/lib/knockout-3.4.0.js"></script>
     <script src="js/lib/oauth-1.0a.js"></script>
     <script src="js/lib/oauth-signature.min.js"></script>
-<!--<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDf0EFelWsSVkc9tDJmIaHUV4R6mB7u59k&callback=initMap"></script>-->
-     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+
   </head>
   <body>
     <div class="wrapper">
@@ -37,10 +37,11 @@
   </ul>
     </div>
     </div>
-    <script src="js/map.js"></script>
+
     <script src="js/data.js"></script>
+    <script async src="js/main.js"></script>
+    <script src="js/map.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDf0EFelWsSVkc9tDJmIaHUV4R6mB7u59k&callback=initMap" onerror="googleError()" async defer></script>
-        <script async src="js/main.js"></script>
 
   </body>
 </html>
