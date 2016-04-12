@@ -5,6 +5,7 @@ function initMap() {
         center: {lat: 40.75773, lng: -73.985709},
         zoom: 17
     });
+    $(ko.applyBindings(new MapViewModel()));
 }
 
 function googleError(){
