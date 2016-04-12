@@ -160,4 +160,4 @@ var MapViewModel = function() {
 
 };
 
-//$(ko.applyBindings(new MapViewModel()));
+$(ko.applyBindings(new MapViewModel()));
