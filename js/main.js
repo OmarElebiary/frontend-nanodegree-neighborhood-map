@@ -60,6 +60,7 @@ var MapViewModel = function() {
 	self.initMap = function() {
 
 		self.map = map;
+		// Create new bounds for map
 		bounds = new google.maps.LatLngBounds();
 
 		self.markers = ko.observableArray([]);
