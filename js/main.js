@@ -1,8 +1,5 @@
 "use strict";
 
-
-function googleSuccess(){}
-
 // Yelp Constants
 var yelpKeyData = {
 	consumerKey: 'DmsUBOS-WtBBQD33Uvqg7A',
@@ -10,6 +7,7 @@ var yelpKeyData = {
 	token: 'Fj9xLvvJhQ4QgTJMPoGpmZmzp5mL88Wk',
 	tokenSecret: 'EtUNshtV6ailWGN0SiQ-CbDXO_c'
 };
+var bounds;
 
 var MapViewModel = function() {
 
@@ -62,6 +60,7 @@ var MapViewModel = function() {
 	self.initMap = function() {
 
 		self.map = map;
+		bounds = new google.maps.LatLngBounds();
 
 		self.markers = ko.observableArray([]);
 		// Creates a marker and pushes into self.markers array
@@ -88,9 +87,15 @@ var MapViewModel = function() {
 				self.infowindow.setContent(contentString);
 			    self.infowindow.open(self.map, this);
 			});
-			
+
 			self.markers.push(marker);
+			bounds.extend(new google.maps.LatLng(
+                    data.location.lat,
+                    data.location.lng));
+
 		});
+		            map.fitBounds(bounds);
+
 		google.maps.event.addListener(self.infowindow,'closeclick', function() {
 			self.resetCenter();
 		});
@@ -105,7 +110,6 @@ var MapViewModel = function() {
 		//Get image from google street view
 		var streetViewURL = 'https://maps.googleapis.com/maps/api/streetview?size=600x400&location=' + markerToUpdate.address + '';
 		var contentString = '<div>'+'<img class="streetViewImage" src="'+ streetViewURL + '">'+'<a href = "'+data.url+'" target="_blank"><h3>'+ markerToUpdate.name + '</h3></a><p>' + markerToUpdate.address + '</p><p>'+data.phone+'</p><p> Rating: ' + data.rating +' | # of Reviews: '+ data.review_count + '</p><img src="'+ data.rating_img_url + '"></img></div>';
-		self.infowindow = new google.maps.InfoWindow();
 		google.maps.event.addListener(markerToUpdate, 'click', function() {
 			self.infowindow.setContent(contentString);
 		    self.infowindow.open(self.map, this);
@@ -115,7 +119,6 @@ var MapViewModel = function() {
 	// Once data is unsuccessful tell user 
 	self.jsonGETFailed = function(markerToUpdate) {
 		var contentString = '<div><h1>'+ markerToUpdate.name + '</h1><p>' + markerToUpdate.address + '</p><p> Rating: ERROR | # of Reviews: ERROR</p><p>Resending Request</p>></div>';
-		self.infowindow = new google.maps.InfoWindow();
 		google.maps.event.addListener(markerToUpdate, 'click', function() {
 			self.infowindow.setContent(contentString);
 		    self.infowindow.open(self.map, this);
@@ -156,4 +159,4 @@ var MapViewModel = function() {
 
 };
 
-$(ko.applyBindings(new MapViewModel()));
+//$(ko.applyBindings(new MapViewModel()));
